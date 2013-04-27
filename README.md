@@ -18,10 +18,5 @@ please understand that we cant even begin to help without [debuglog][1], do not 
 
 
 
-****NOTE 1****
-
-if you are looking for Addic7ed service -> [look here][2]
-
   [1]: http://wiki.xbmc.org/index.php?title=Log_file
-  [2]: http://forum.xbmc.org/showthread.php?tid=75437&pid=717657#pid717657
 
