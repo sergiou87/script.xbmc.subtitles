@@ -8,7 +8,7 @@ from BeautifulSoup import BeautifulSoup
 _ = sys.modules[ "__main__" ].__language__
 
 self_host = "http://www.addic7ed.com"
-self_release_pattern = re.compile(" \nVersion (.+), ([0-9]+).([0-9])+ MBs")
+self_release_pattern = re.compile("Version (.+), ([0-9]+).([0-9])+ MBs")
 
 def compare_columns(b,a):
     return cmp( a["sync"], b["sync"] ) or cmp( b["language_name"], a["language_name"] )
@@ -40,7 +40,9 @@ def query_TvShow(name, season, episode, file_original_path, langs):
         subsFullTable = subs.parent.parent
         langs_html = subsFullTable.findNext("td", {"class" : "language"})
         fullLanguage = langs_html.getText().replace("&nbsp;", "")
-        subteams = self_release_pattern.match(str(subs.contents[1])).groups()[0].lower()
+        release_text = subs.contents[1].replace("&nbsp;", "")
+        release_match = self_release_pattern.match(str(release_text))
+        subteams = release_match.groups()[0].lower()
         file_name = os.path.basename(file_original_path).lower()
         if (file_name.find(str(subteams))) > -1:
           hashed = True
