@@ -12,23 +12,27 @@ self_release_pattern = re.compile("Version (.+), ([0-9]+).([0-9])+ MBs")
 
 def compare_columns(b,a):
     return cmp( a["sync"], b["sync"] ) or cmp( b["language_name"], a["language_name"] )
-    
+
 def get_url(url):
     req_headers = {
     'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13',
-    'Referer': 'http://www.addic7ed.com'}
+    'Referer': 'http://www.addic7ed.com',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'If-Modified-Since': 'Sat, 29 Oct 1994 19:43:31 GMT'
+    }
     request = urllib2.Request(url, headers=req_headers)
     opener = urllib2.build_opener()
     response = opener.open(request)
 
-    contents = response.read() 
-    return contents    
+    contents = response.read()
+    return contents
 
 def query_TvShow(name, season, episode, file_original_path, langs):
-    
+
     sublinks = []
     name = name.lower().replace(" ", "_").replace("$#*!","shit").replace("'","") # need this for $#*! My Dad Says and That 70s show
     name = name.replace("the_office_us", "the_office_(us)")
+    name = name.replace("house_of_cards", "house_of_cards_(2013)")
     searchurl = "%s/serie/%s/%s/%s/addic7ed" %(self_host, name, season, episode)
     socket.setdefaulttimeout(3)
     page = urllib2.urlopen(searchurl)
@@ -69,7 +73,7 @@ def query_TvShow(name, season, episode, file_original_path, langs):
         print "Error"
         pass
     return sublinks
- 
+
 def query_Film(name, file_original_path,year, langs):
     sublinks = []
     name = urllib.quote(name.replace(" ", "_"))
@@ -88,7 +92,7 @@ def query_Film(name, file_original_path,year, langs):
         if (file_name.find(str(subteams))) > -1:
           hashed = True
         else:
-          hashed = False  
+          hashed = False
         try:
           lang = toOpenSubtitles_two(fullLanguage)
         except:
@@ -100,7 +104,7 @@ def query_Film(name, file_original_path,year, langs):
             sublinks.append({'filename':"%s-%s" %(name.replace("_", ".").title(),subteams ),'link':link,'language_name':fullLanguage,'language_id':lang,'language_flag':"flags/%s.gif" % (lang,),'movie':"movie","ID":"subtitle_id","rating":"0","format":"srt","sync":hashed})
       except:
         pass
-    return sublinks    
+    return sublinks
 
 
 def search_subtitles( file_original_path, title, tvshow, year, season, episode, set_temp, rar, lang1, lang2, lang3, stack ): #standard input
@@ -130,7 +134,7 @@ def download_subtitles (subtitles_list, pos, zip_subs, tmp_sub_dir, sub_folder, 
 
     local_file_handle = open(file, "w" + "b")
     local_file_handle.write(f)
-    local_file_handle.close() 
-   
+    local_file_handle.close()
+
     language = subtitles_list[pos][ "language_name" ]
     return False, language, file #standard output
